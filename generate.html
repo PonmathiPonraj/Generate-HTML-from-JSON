@@ -1,0 +1,73 @@
+<html>
+
+<head>
+    <title>
+        Generate HTML from JSON
+    </title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <div class="box">
+        <div class="inputBox">
+            <textarea id="input1" rows="10" cols="55"></textarea>
+        </div>
+        <div class="button">
+            <button class="btn" onclick="myfunction()">Generate</button>
+        </div>
+        <div id="sub_box2" style="display:none">
+        </div>
+        <div id="outputDiv">
+            <textarea id="output" rows="10" cols="55"></textarea>
+        </div>
+    </div>
+    <script>
+        var up = document.getElementById('myfunction');
+        var outputDiv = document.getElementById('output')
+        var mainDiv = document.getElementById('sub_box2');
+
+        function myfunction() {
+            var IDList = new Set();
+            outputDiv.innerHTML = '';
+            mainDiv.innerHTML = '';
+            //var input = [ { "id": 1, "username": "Gonzales", "video_name": "The Ledergberg Replica Plating Experiment", "action": "Downloaded" }, { "id": 2, "username": "Dominique", "video_name": "Atomic Structure of DNA", "action": "Viewed" } ];
+            var input = document.getElementById('input1').value;
+            input = input.replace(/'/g, '"')
+            input = JSON.parse(input)
+            for (var data of input) {
+                if (IDList.has(data.id)) {
+                    alert('Error:ID duplicated!')
+                    return;
+                } else {
+                    IDList.add(data.id);
+                }
+                //Root Div
+                var divC = document.createElement('div');
+                divC.className = 'root';
+                divC.setAttribute('data-id', data.id)
+                    //Looping keys
+                for (var key in data) {
+                    if (key == 'id') continue;
+                    var spanC1 = document.createElement('span');
+                    spanC1.className = key;
+                    spanC1.innerText = data[key];
+                    if (key == 'action') {
+                        spanC1.className = "type";
+                        var spanC2 = document.createElement('span');
+                        spanC2.className = 'additional_details';
+                        spanC2.appendChild(spanC1);
+                        divC.appendChild(spanC2);
+                    } else {
+                        divC.appendChild(spanC1);
+                    }
+                }
+                //Main Addition
+                mainDiv.appendChild(divC)
+                console.log(mainDiv.innerHTML)
+                outputDiv.innerText = mainDiv.innerHTML.trim();
+            }
+        }
+    </script>
+</body>
+
+</html>
